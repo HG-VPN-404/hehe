@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#0F172A"> <LinearLayout
+    android:background="#0F172A">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:gravity="center_vertical"
@@ -44,10 +46,6 @@
             android:hint="Paste TeraBox Link"
             app:boxBackgroundColor="#1E293B"
             app:boxStrokeColor="#3B82F6"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -65,17 +63,16 @@
             android:layout_height="60dp"
             android:text="Connect Drive"
             android:layout_marginTop="12dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
             app:cornerRadius="12dp"
-            app:backgroundTint="#3B82F6"/> <TextView
+            app:backgroundTint="#3B82F6"/>
+
+        <TextView
             android:id="@+id/tvBreadcrumb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Root Folder"
             android:textColor="#94A3B8"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="8dp"
             android:textSize="14sp"/>
 
         <ProgressBar
@@ -83,8 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="gone"
-            android:indeterminateTint="#3B82F6"/>
+            android:visibility="gone"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
