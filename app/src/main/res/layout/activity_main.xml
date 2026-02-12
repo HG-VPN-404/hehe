@@ -1,54 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#121212"
-    android:padding="16dp">
-
-    <TextView
+    android:background="#0F172A"> <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TeraBox Streamer"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:background="#1E293B"
+        android:elevation="4dp">
 
-    <EditText
-        android:id="@+id/etUrl"
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="#FFFFFF"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TeraBox Drive"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tempel Link TeraBox di sini..."
-        android:textColorHint="#888888"
-        android:textColor="#FFFFFF"
-        android:background="#2C2C2C"
-        android:padding="12dp"
-        android:inputType="textUri"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <Button
-        android:id="@+id/btnLoad"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="GAS KAN!"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="#00E676"
-        android:textColor="#000000"
-        android:textStyle="bold"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Paste TeraBox Link"
+            app:boxBackgroundColor="#1E293B"
+            app:boxStrokeColor="#3B82F6"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:layout_marginTop="20dp"/>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#94A3B8"
+                android:inputType="textUri"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="16dp"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLoad"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Connect Drive"
+            android:layout_marginTop="12dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="12dp"
+            app:backgroundTint="#3B82F6"/> <TextView
+            android:id="@+id/tvBreadcrumb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Root Folder"
+            android:textColor="#94A3B8"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="14sp"/>
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:indeterminateTint="#3B82F6"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
 </LinearLayout>
