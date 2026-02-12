@@ -41,17 +41,17 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var etUrl: EditText
     private lateinit var btnLoad: Button
-    private lateinit var btnBack: ImageButton // Tombol back di layar
+    private lateinit var btnBack: ImageButton
     private lateinit var tvBreadcrumb: TextView
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
     
-    private valclient = OkHttpClient()
+    // --- PEMBETULAN DI SINI (SUDAH ADA SPASI) ---
+    private val client = OkHttpClient() 
     private val gson = Gson()
     private val BASE_API_URL = "https://apiku.pribadiku-230.workers.dev/?url="
     
     // --- NAVIGASI HISTORY (STACK) ---
-    // Ini buat nyimpen jejak folder biar bisa di back
     private val folderStack = Stack<String>()
     private var currentUrl: String = ""
 
@@ -72,7 +72,6 @@ class MainActivity : AppCompatActivity() {
         btnLoad.setOnClickListener {
             val url = etUrl.text.toString()
             if (url.isNotEmpty()) {
-                // Reset stack kalau mulai baru
                 folderStack.clear()
                 updateBackUI()
                 loadFolder(BASE_API_URL + url)
@@ -84,7 +83,7 @@ class MainActivity : AppCompatActivity() {
             handleBackNavigation()
         }
 
-        // Setup Tombol Back Fisik HP (Gesture Back)
+        // Setup Tombol Back Fisik HP
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 handleBackNavigation()
@@ -92,27 +91,22 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    // Fungsi Navigasi Mundur
     private fun handleBackNavigation() {
         if (folderStack.isNotEmpty()) {
-            // Ambil URL terakhir dari tumpukan
             val prevUrl = folderStack.pop()
             loadFolder(prevUrl, isBackAction = true)
         } else {
-            // Kalau stack kosong, keluar aplikasi (default)
             finish()
         }
         updateBackUI()
     }
 
     private fun updateBackUI() {
-        // Tampilkan tombol back di layar kalau stack ada isinya
         btnBack.visibility = if (folderStack.isNotEmpty()) View.VISIBLE else View.GONE
         tvBreadcrumb.text = if (folderStack.isNotEmpty()) "Sub Folder" else "Root Folder"
     }
 
     private fun loadFolder(fullUrl: String, isBackAction: Boolean = false) {
-        // Simpan URL sekarang ke stack sebelum pindah (Kecuali kalau lagi aksi Back)
         if (!isBackAction && currentUrl.isNotEmpty()) {
             folderStack.push(currentUrl)
         }
@@ -138,7 +132,6 @@ class MainActivity : AppCompatActivity() {
                         if (apiResponse.status == "success" && apiResponse.data != null) {
                             recyclerView.adapter = FileAdapter(apiResponse.data)
                         } else {
-                            // Kalau folder kosong/error, jangan simpan di history
                             if(!isBackAction && folderStack.isNotEmpty()) folderStack.pop()
                             Toast.makeText(this@MainActivity, "Folder Kosong", Toast.LENGTH_SHORT).show()
                         }
@@ -163,9 +156,9 @@ class MainActivity : AppCompatActivity() {
                 
                 if (item.is_folder) {
                     tvSize.text = "Folder"
-                    tvSize.setTextColor(0xFF3B82F6.toInt()) // Biru
+                    tvSize.setTextColor(0xFF3B82F6.toInt())
                     imgThumb.setImageResource(android.R.drawable.ic_menu_more)
-                    imgThumb.setPadding(20,20,20,20) // Biar icon folder gak kegedean
+                    imgThumb.setPadding(20,20,20,20)
                     imgAction.setImageResource(android.R.drawable.ic_input_add)
                 } else {
                     val ext = item.filename.substringAfterLast('.', "").lowercase()
@@ -175,12 +168,10 @@ class MainActivity : AppCompatActivity() {
                         else -> "File"
                     }
                     tvSize.text = "${item.size_mb} MB • $type"
-                    tvSize.setTextColor(0xFF64748B.toInt()) // Abu abu
+                    tvSize.setTextColor(0xFF64748B.toInt())
                     
-                    // Reset Padding buat gambar
                     imgThumb.setPadding(0,0,0,0)
 
-                    // Load Thumbnail di List (Pakai Thumb kecil biar enteng)
                     if (!item.thumb.isNullOrEmpty()) {
                         Glide.with(itemView)
                             .load(item.thumb)
@@ -219,7 +210,6 @@ class MainActivity : AppCompatActivity() {
         val ext = item.filename.substringAfterLast('.', "").lowercase()
         
         when {
-            // VIDEO
             listOf("mp4", "mkv", "avi").contains(ext) -> {
                 val options = arrayOf("Play Streaming", "Download")
                 AlertDialog.Builder(this)
@@ -234,14 +224,9 @@ class MainActivity : AppCompatActivity() {
                         }
                     }.show()
             }
-            
-            // GAMBAR - Langsung buka Preview High Quality
             listOf("jpg", "jpeg", "png", "webp").contains(ext) -> {
-                // Di sini kita pakai PROXY URL, bukan thumb lagi
-                showImageDialog(proxyUrl) 
+                showImageDialog(proxyUrl)
             }
-            
-            // LAINNYA
             else -> downloadFile(proxyUrl, item.filename)
         }
     }
@@ -260,7 +245,6 @@ class MainActivity : AppCompatActivity() {
         )
         imageView.scaleType = ImageView.ScaleType.FIT_CENTER
         
-        // Load Gambar High Quality (Proxy)
         Glide.with(this).load(url).into(imageView)
         
         container.addView(imageView)
