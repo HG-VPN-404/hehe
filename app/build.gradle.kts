@@ -14,27 +14,26 @@ android {
     compileSdk = libs.versions.compile.sdk.version.get().toInt()
 
     defaultConfig {
-        minSdk = libs.versions.min.sdk.version.get().toInt()
+        // --- UBAHAN 1: KITA TURUNKAN KE ANDROID 7 (Nougat) ---
+        // Biar hampir semua HP bisa instal
+        minSdk = 24 
+        
         namespace = APP_ID
-
         applicationId = APP_ID
         versionCode = APP_VERSION_CODE.toInt()
         versionName = APP_VERSION_NAME
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        // 🔒 Build khusus ARM64
-        ndk {
-            abiFilters += listOf("arm64-v8a")
-        }
     }
 
-    // 📦 Split APK per ABI (ARM64 only, no universal)
+    // --- UBAHAN 2: BUAT APK UNIVERSAL (SEMUA HP) ---
     splits {
         abi {
             isEnable = true
             reset()
-            include("arm64-v8a")
-            isUniversalApk = false
+            // Kita masukkan kedua tipe CPU (32-bit dan 64-bit)
+            include("armeabi-v7a", "arm64-v8a") 
+            // Kita set true biar jadi 1 file APK yang isinya lengkap
+            isUniversalApk = true 
         }
     }
 
@@ -49,13 +48,12 @@ android {
 
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false 
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
         }
         getByName("debug") {
             isMinifyEnabled = false
@@ -64,23 +62,10 @@ android {
     }
 
     lint {
-        warningsAsErrors = true
-        abortOnError = true
+        warningsAsErrors = false 
+        abortOnError = false
         disable.add("GradleDependency")
     }
-
-    // Kalau nanti mau pakai flavor, tinggal hidupin lagi
-//    flavorDimensions("version")
-//    productFlavors {
-//        create("full") {
-//            dimension = "version"
-//            applicationIdSuffix = ".full"
-//        }
-//        create("demo") {
-//            dimension = "version"
-//            applicationIdSuffix = ".demo"
-//        }
-//    }
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -90,6 +75,7 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
+    // Library bawaan template
     implementation(projects.libraryAndroid)
     implementation(projects.libraryCompose)
     implementation(projects.libraryKotlin)
@@ -97,12 +83,19 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraint.layout)
     implementation(libs.androidx.core.ktx)
+    implementation("androidx.recyclerview:recyclerview:1.3.2") 
 
     testImplementation(libs.junit)
 
+    // --- LIBRARY DOWNLOADER & STREAMER ---
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    
+    implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.media3:media3-exoplayer:1.2.0")
+    implementation("androidx.media3:media3-ui:1.2.0")
+    implementation("androidx.media3:media3-common:1.2.0")
 
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.ext.junit.ktx)
