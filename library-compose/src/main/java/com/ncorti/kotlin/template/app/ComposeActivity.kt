@@ -37,7 +37,7 @@ fun AppMain() {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = "Kotlin Android Template") },
+                    title = { Text(text = "TeraDown") },
                     backgroundColor = MaterialTheme.colors.primary
                 )
             },

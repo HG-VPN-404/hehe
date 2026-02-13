@@ -1,0 +1,16 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.TeraStream" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/accent_primary</item>
+        <item name="colorPrimaryVariant">@color/accent_pressed</item>
+        <item name="colorOnPrimary">@color/white</item>
+        
+        <item name="colorSecondary">@color/accent_primary</item>
+        <item name="colorAccent">@color/accent_primary</item>
+        <item name="colorControlActivated">@color/accent_primary</item>
+        <item name="colorControlHighlight">@color/accent_soft</item>
+        
+        <item name="android:statusBarColor">@color/bg_dark</item>
+    </style>
+
+    <style name="Theme.TeraStream" parent="Base.Theme.TeraStream" />
+</resources>
