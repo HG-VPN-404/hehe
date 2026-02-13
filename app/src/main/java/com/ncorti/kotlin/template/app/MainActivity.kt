@@ -39,19 +39,19 @@ data class FileLinks(val browse: String?, val proxy: String?)
 
 class MainActivity : AppCompatActivity() {
 
+    // --- VARIABEL UI ---
     private lateinit var etUrl: EditText
-    private lateinit var btnLoad: Button
+    private lateinit var btnLoad: ImageButton // <--- INI YG BIKIN CRASH TADI (Harus ImageButton)
     private lateinit var btnBack: ImageButton
     private lateinit var tvBreadcrumb: TextView
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerView: RecyclerView
     
-    // --- PEMBETULAN DI SINI (SUDAH ADA SPASI) ---
-    private val client = OkHttpClient() 
+    private val client = OkHttpClient()
     private val gson = Gson()
     private val BASE_API_URL = "https://apiku.pribadiku-230.workers.dev/?url="
     
-    // --- NAVIGASI HISTORY (STACK) ---
+    // --- NAVIGASI HISTORY ---
     private val folderStack = Stack<String>()
     private var currentUrl: String = ""
 
@@ -59,31 +59,35 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Init View
+        // Init View (Sambungkan ID XML ke Kotlin)
         etUrl = findViewById(R.id.etUrl)
-        btnLoad = findViewById(R.id.btnLoad)
+        btnLoad = findViewById(R.id.btnLoad) // Sekarang sudah aman karena tipe variabelnya ImageButton
         btnBack = findViewById(R.id.btnBack)
         tvBreadcrumb = findViewById(R.id.tvBreadcrumb)
         progressBar = findViewById(R.id.progressBar)
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Setup Tombol Load
+        // Tombol LOAD / GO
         btnLoad.setOnClickListener {
             val url = etUrl.text.toString()
             if (url.isNotEmpty()) {
                 folderStack.clear()
                 updateBackUI()
-                loadFolder(BASE_API_URL + url)
+                // Cek apakah url sudah lengkap atau cuma kode
+                val finalUrl = if (url.startsWith("http")) url else "https://terabox.com/s/$url"
+                loadFolder(BASE_API_URL + finalUrl)
+            } else {
+                Toast.makeText(this, "Paste link dulu bos!", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Setup Tombol Back di Layar
+        // Tombol BACK di Layar
         btnBack.setOnClickListener {
             handleBackNavigation()
         }
 
-        // Setup Tombol Back Fisik HP
+        // Tombol BACK Fisik HP
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 handleBackNavigation()
@@ -103,7 +107,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateBackUI() {
         btnBack.visibility = if (folderStack.isNotEmpty()) View.VISIBLE else View.GONE
-        tvBreadcrumb.text = if (folderStack.isNotEmpty()) "Sub Folder" else "Root Folder"
+        tvBreadcrumb.text = if (folderStack.isNotEmpty()) "📂 Sub Folder" else "🏠 Root Folder"
     }
 
     private fun loadFolder(fullUrl: String, isBackAction: Boolean = false) {
@@ -119,7 +123,7 @@ class MainActivity : AppCompatActivity() {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread { 
                     progressBar.visibility = View.GONE
-                    Toast.makeText(this@MainActivity, "Gagal koneksi", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Gagal koneksi: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -133,16 +137,17 @@ class MainActivity : AppCompatActivity() {
                             recyclerView.adapter = FileAdapter(apiResponse.data)
                         } else {
                             if(!isBackAction && folderStack.isNotEmpty()) folderStack.pop()
-                            Toast.makeText(this@MainActivity, "Folder Kosong", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@MainActivity, "Folder Kosong / Link Salah", Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(this@MainActivity, "Error Data", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, "Error Data JSON", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         })
     }
 
+    // --- ADAPTER LIST (TAMPILAN BARIS) ---
     inner class FileAdapter(private val list: List<FileItem>) : RecyclerView.Adapter<FileAdapter.ViewHolder>() {
 
         inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -156,9 +161,8 @@ class MainActivity : AppCompatActivity() {
                 
                 if (item.is_folder) {
                     tvSize.text = "Folder"
-                    tvSize.setTextColor(0xFF3B82F6.toInt())
                     imgThumb.setImageResource(android.R.drawable.ic_menu_more)
-                    imgThumb.setPadding(20,20,20,20)
+                    imgThumb.scaleType = ImageView.ScaleType.CENTER_INSIDE
                     imgAction.setImageResource(android.R.drawable.ic_input_add)
                 } else {
                     val ext = item.filename.substringAfterLast('.', "").lowercase()
@@ -168,14 +172,11 @@ class MainActivity : AppCompatActivity() {
                         else -> "File"
                     }
                     tvSize.text = "${item.size_mb} MB • $type"
-                    tvSize.setTextColor(0xFF64748B.toInt())
+                    imgThumb.scaleType = ImageView.ScaleType.CENTER_CROP
                     
-                    imgThumb.setPadding(0,0,0,0)
-
                     if (!item.thumb.isNullOrEmpty()) {
                         Glide.with(itemView)
                             .load(item.thumb)
-                            .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(16)))
                             .into(imgThumb)
                     } else {
                         imgThumb.setImageResource(android.R.drawable.ic_menu_gallery)
@@ -236,7 +237,7 @@ class MainActivity : AppCompatActivity() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         
         val container = FrameLayout(this)
-        container.setBackgroundColor(0xFF000000.toInt())
+        container.setBackgroundColor(0xFF121212.toInt()) // Background Gelap
         
         val imageView = ImageView(this)
         imageView.layoutParams = ViewGroup.LayoutParams(
