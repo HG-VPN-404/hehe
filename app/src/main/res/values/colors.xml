@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="bg_dark">#0F172A</color>        <color name="bg_card">#1E293B</color>        <color name="accent_primary">#3B82F6</color> <color name="accent_pressed">#2563EB</color> <color name="accent_soft">#333B82F6</color>  <color name="text_primary">#F8FAFC</color>   <color name="text_secondary">#94A3B8</color> <color name="colorPrimary">@color/accent_primary</color>
+    <color name="colorPrimaryDark">@color/bg_dark</color>
+    <color name="colorAccent">@color/accent_primary</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    
-    <color name="bg_dark">#0F172A</color>        <color name="bg_card">#1E293B</color>        <color name="accent_primary">#3B82F6</color> <color name="accent_pressed">#2563EB</color> <color name="accent_soft">#333B82F6</color>  <color name="text_primary">#F8FAFC</color>   <color name="text_secondary">#94A3B8</color> </resources>
+</resources>
